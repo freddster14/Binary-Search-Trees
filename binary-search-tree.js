@@ -39,32 +39,45 @@ class Tree {
         
     }
     insert(value){
+        if(this.root.data === value || value === undefined) return
         let tree = this.root
-        let prev = null
-        while(tree !== null){
+        let lastNode = null
+        while(tree !== null && tree.data !== value){
             if(tree.data > value){
-                prev = tree
+                lastNode = tree
                 tree = tree.left
             }else if(tree.data < value){
-                prev = tree
+                lastNode = tree
                 tree = tree.right
             }
-            if(tree.data === value){
-                throw 
-            }
-            console.log()
-            console.log(tree)
         }
-        if(prev.data > value){
-            prev.left = new Node(value)
-        }else {
-            prev.right = new Node(value)
+        //Adds new 'Leaf'
+        if(lastNode.data > value && tree === null){
+            lastNode.left = new Node(value)
+        }else if(lastNode.data < value && tree === null){
+            lastNode.right = new Node(value)
         }
-        console.log(prev)
-        
     }
     delete(value){
-
+        if(value === undefined) return
+        let tree = this.root;
+        let lastNode = null;
+        let node = null;
+        while(tree !== null && tree.data !== value){
+            if(tree.data > value){
+                lastNode = tree
+                tree = tree.left
+            }else if(tree.data < value){
+                lastNode = tree
+                tree = tree.right
+            }
+        }
+        if(tree.left === null && tree.right === null){
+            return tree = null
+        }
+        
+        console.log(lastNode, tree, node)
+        
     }
    
 }
@@ -83,7 +96,8 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   };
   
 
-const tree = new Tree;
-tree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-tree.insert(13);
-console.log(prettyPrint(tree.root))
+const numTree = new Tree;
+numTree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+numTree.insert(2);
+numTree.delete(7)
+console.log(prettyPrint(numTree.root))

@@ -62,7 +62,6 @@ class Tree {
         if(value === undefined) return
         let tree = this.root;
         let lastNode = null;
-        let node = null;
         while(tree !== null && tree.data !== value){
             if(tree.data > value){
                 lastNode = tree
@@ -72,11 +71,29 @@ class Tree {
                 tree = tree.right
             }
         }
+        if(tree === null)return
         if(tree.left === null && tree.right === null){
-            return tree = null
+            if(lastNode.data < tree.data) return lastNode.right = null
+            return lastNode.left = null
+        }else if(tree.left !== null && tree.right === null){
+            if(lastNode.left === tree) return lastNode.left = tree.left;
+            return lastNode.right = tree.left
+        }else if(tree.right !== null && tree.left === null){
+            if(lastNode.left === tree) return lastNode.left = tree.right;
+            return lastNode.right = tree.right
+        }else if(tree.left !== null && tree.right !== null){
+            let successor = tree.right;
+            lastNode = successor
+            while(successor.left !== null){
+                lastNode = successor
+                successor = successor.left
+            }
+            if(lastNode.left === null) tree.right = null
+            lastNode.left = successor.right
+            tree.data = successor.data
+
         }
         
-        console.log(lastNode, tree, node)
         
     }
    
@@ -98,6 +115,14 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const numTree = new Tree;
 numTree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-numTree.insert(2);
-numTree.delete(7)
+numTree.insert(6);
+numTree.insert(70);
+numTree.insert(69);
+numTree.insert(68);
+numTree.insert(68.5)
+numTree.insert(71);
+
+//numTree.delete(4);
+numTree.delete(67);
+numTree.delete()
 console.log(prettyPrint(numTree.root))

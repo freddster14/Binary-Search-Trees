@@ -25,8 +25,9 @@ class Tree {
         let start = 0
         let end = this.array.length - 1;
         let mid = Math.floor((start + end) / 2);
-        return this.root = this.balanceTree(start, end, mid)
-        
+        this.root = this.balanceTree(start, end, mid)
+        this.array = [];
+        return this.root
     }
     balanceTree(start, end, mid){
         if(start > end) return null;
@@ -35,8 +36,6 @@ class Tree {
             this.balanceTree(start, mid - 1 , Math.floor((start + mid) / 2)),
             this.balanceTree(mid + 1, end , Math.floor(((mid + 1) + end) / 2))
             );
-        
-        
     }
     insert(value){
         if(this.root.data === value || value === undefined) return
@@ -106,15 +105,32 @@ class Tree {
         return tree
     }
     levelOrder(callback){
-       
-        let array = [];
-        array.push(this.root)
-        while(array.length !== 0){
-
-        }
-
+        let queue = [];
+        this.array = [];
+        queue.push(this.root)
+        while(queue.length !== 0){
+            if(queue[0].left !== null) queue.push(queue[0].left)
+            if(queue[0].right !== null) queue.push(queue[0].right)
+            if(callback !== undefined) callback(queue[0])
+            this.array.push(queue.shift().data);
+            }
+            if(callback === undefined) return this.array
+    }
+    inOrder(callback){
         
-        if(callback === null) return array
+        
+    }
+    preOrder(root = this.root, callback){
+        if(root === null) return;
+        if(callback !== undefined) callback(root)
+        this.array.push(root.data)
+        this.preOrder(root.left)
+        this.preOrder(root.right)
+        if(callback === undefined) return this.array
+                
+    }
+    postOrder(callback){
+
     }
 }
 
@@ -144,5 +160,8 @@ numTree.insert(71);
 //numTree.delete(4);
 numTree.delete(67);
 numTree.delete()
+console.log(numTree.levelOrder())
+numTree.array = []
+console.log(numTree.preOrder())
 console.log(prettyPrint(numTree.root))
 console.log(numTree.find(9))

@@ -91,12 +91,31 @@ class Tree {
             if(lastNode.left === null) tree.right = null
             lastNode.left = successor.right
             tree.data = successor.data
+        }
+    }
+    find(value){
+        if(value === undefined) return
+        let tree = this.root
+        while(tree !== null && tree.data !== value){
+            if(tree.data > value){
+                tree = tree.left
+            }else if(tree.data < value){
+                tree = tree.right
+            }
+        }
+        return tree
+    }
+    levelOrder(callback){
+       
+        let array = [];
+        array.push(this.root)
+        while(array.length !== 0){
 
         }
+
         
-        
+        if(callback === null) return array
     }
-   
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -126,3 +145,4 @@ numTree.insert(71);
 numTree.delete(67);
 numTree.delete()
 console.log(prettyPrint(numTree.root))
+console.log(numTree.find(9))

@@ -116,9 +116,14 @@ class Tree {
             }
             if(callback === undefined) return this.array
     }
-    inOrder(callback){
-        
-        
+    inOrder(root = this.root, callback){
+        if(root === null) return;
+        this.inOrder(root.left);
+        if(callback !== undefined) callback(root)
+        this.array.push(root.data)
+        this.inOrder(root.right)
+        if(callback === undefined) return this.array
+
     }
     preOrder(root = this.root, callback){
         if(root === null) return;
@@ -129,7 +134,24 @@ class Tree {
         if(callback === undefined) return this.array
                 
     }
-    postOrder(callback){
+    postOrder(root = this.root, callback){
+        if(root === null) return;
+        this.postOrder(root.left)
+        this.postOrder(root.right)
+        this.array.push(root.data)
+        if(callback !== undefined) callback(root)
+        if(callback === undefined) return this.array
+    }
+    height(node){
+        
+    }   
+    depth(node){
+
+    }
+    isBalanced(){
+
+    }
+    rebalanced(){
 
     }
 }
@@ -163,5 +185,9 @@ numTree.delete()
 console.log(numTree.levelOrder())
 numTree.array = []
 console.log(numTree.preOrder())
+numTree.array = []
+console.log(numTree.inOrder())
+numTree.array = [];
+console.log(numTree.postOrder())
 console.log(prettyPrint(numTree.root))
 console.log(numTree.find(9))

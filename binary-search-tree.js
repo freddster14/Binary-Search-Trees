@@ -12,14 +12,17 @@ class Tree {
         this.array = array
     }
     buildTree(array){
-        array.sort((a,b) => {
-           return a - b
-        })
-        //Removes Dupes
-        let b = 0
-        for(let i = 1; i < array.length + 1; i++, b++){
-            if(array[b] !== array[i]){
-                this.array.push((array[b]))
+        if(array === undefined) return;
+        if(this.array.length === 0){
+            array.sort((a,b) => {
+            return a - b
+            })
+            //Removes Dupes
+            let b = 0
+            for(let i = 1; i < array.length + 1; i++, b++){
+                if(array[b] !== array[i]){
+                    this.array.push((array[b]))
+                }
             }
         }
         let start = 0
@@ -116,43 +119,80 @@ class Tree {
             }
             if(callback === undefined) return this.array
     }
-    inOrder(root = this.root, callback){
+    inOrder(callback, root = this.root, ){
         if(root === null) return;
-        this.inOrder(root.left);
-        if(callback !== undefined) callback(root)
+        this.inOrder(callback, root.left);
+        if(callback !== undefined) callback(callback, root)
         this.array.push(root.data)
-        this.inOrder(root.right)
+        this.inOrder(callback, root.right)
         if(callback === undefined) return this.array
 
     }
-    preOrder(root = this.root, callback){
+    preOrder(callback, root = this.root){
         if(root === null) return;
         if(callback !== undefined) callback(root)
         this.array.push(root.data)
-        this.preOrder(root.left)
-        this.preOrder(root.right)
+        this.preOrder(callback, root.left)
+        this.preOrder(callback, root.right)
         if(callback === undefined) return this.array
                 
     }
-    postOrder(root = this.root, callback){
+    postOrder(callback, root = this.root){
         if(root === null) return;
-        this.postOrder(root.left)
-        this.postOrder(root.right)
+        this.postOrder(callback, root.left)
+        this.postOrder(callback, root.right)
         this.array.push(root.data)
         if(callback !== undefined) callback(root)
         if(callback === undefined) return this.array
     }
     height(node){
+        let array = [];
+        let j = 0;
+        this.heightLogic(node, 0, array);
+        for(let i = 1; i < array.length; i++){
+            if(array[j] < array[i]) {
+                j = i
+            }
+        }
+        return array[j]
+    }
+    heightLogic(node, count, arr){
+        if(node === null) return count -= 1;
+        if(node.left === null && node.right === null) {
+            return count -= 1
+        }
+        count += 1;
+        this.heightLogic(node.left, count, arr)
+        this.heightLogic(node.right, count, arr)
+        count += 1;
+        arr.push(count)
+        return arr
         
     }   
     depth(node){
-
+        if(node === undefined || node === null) return;
+        let tree = this.root;
+        let count = 0;
+        while(tree !== null && tree.data !== node.data){
+            if(tree.data > node.data){
+                tree = tree.left
+            }else if(tree.data < node.data){
+                tree = tree.right
+            }
+            count += 1
+        }
+        return `The Node: ${node.data} is at depth -> ${count}`
     }
     isBalanced(){
-
+        if(this.height(this.root.left) - this.height(this.root.right) > 1){
+            return false
+        } else return true
     }
     rebalanced(){
-
+        this.array = []
+        if(!this.isBalanced()){
+            this.buildTree(this.array = this.inOrder())
+        }
     }
 }
 
@@ -170,24 +210,45 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   };
   
 
-const numTree = new Tree;
-numTree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-numTree.insert(6);
-numTree.insert(70);
-numTree.insert(69);
-numTree.insert(68);
-numTree.insert(68.5)
-numTree.insert(71);
+function randomArray(number){
+    let randomArray = [];
+    let arrayLength = Math.floor(Math.random() * 30);
+    if(arrayLength < 10) arrayLength += 5;
+    for(let i = 0; i < arrayLength ; i++){
+    randomArray.push(Math.floor(Math.random() * 99))
+    }
+    return randomArray
+}
+let randomTree = new Tree;
+randomTree.buildTree(randomArray());
+allTransversalMethods(randomTree)
+console.log(`Is the tree balanced? => ${randomTree.isBalanced()}`)
+console.log(prettyPrint(randomTree.root));
+unBalanceATree(randomTree);
+console.log(`Is the tree balanced? => ${randomTree.isBalanced()}`)
+console.log(prettyPrint(randomTree.root));
+randomTree.rebalanced();
+console.log(`Is the tree balanced? => ${randomTree.isBalanced()}`)
+console.log(prettyPrint(randomTree.root));
+allTransversalMethods(randomTree);
+//Find depth of a random element in the array
+console.log(randomTree.depth(randomTree.find(randomTree.array[Math.floor(Math.random() * randomTree.array.length)])))
 
-//numTree.delete(4);
-numTree.delete(67);
-numTree.delete()
-console.log(numTree.levelOrder())
-numTree.array = []
-console.log(numTree.preOrder())
-numTree.array = []
-console.log(numTree.inOrder())
-numTree.array = [];
-console.log(numTree.postOrder())
-console.log(prettyPrint(numTree.root))
-console.log(numTree.find(9))
+function unBalanceATree(tree){
+    let balanced = tree.isBalanced()
+    while(balanced){
+        tree.insert(Math.floor(Math.random() * 10))
+        balanced = tree.isBalanced()
+    }
+}
+
+function allTransversalMethods(tree){
+    console.log("Level Order " + tree.levelOrder());
+    tree.array = []
+    console.log("Pre Order " + tree.preOrder());
+    tree.array = []
+    console.log("In Order " + tree.inOrder());
+    tree.array = []
+    console.log("Post Order " + tree.postOrder());
+}
+
